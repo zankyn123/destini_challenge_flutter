@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'story_brain.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,60 +10,105 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      home: DestiniPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class DestiniPage extends StatefulWidget {
+  const DestiniPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<DestiniPage> createState() => _DestiniPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _DestiniPageState extends State<DestiniPage> {
+  StoryBrain storyBrain = StoryBrain();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+          fit: BoxFit.cover,
+          image: AssetImage('images/background.png'),
+        )),
+        child: SafeArea(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 5,
+                child: Center(
+                  child: Text(
+                    storyBrain.getCurrentStoryTitle(),
+                    style: const TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      storyBrain.makeChoice(ChoiceIndex.first);
+                    });
+                  },
+                  style: ButtonStyle(
+                    padding: WidgetStateProperty.all(const EdgeInsets.all(16)),
+                    shape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                    backgroundColor: WidgetStateProperty.all(Colors.red),
+                  ),
+                  child: Text(
+                    storyBrain.getCurrentChoice1(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+              if (storyBrain.isRemainStory())
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        storyBrain.makeChoice(ChoiceIndex.second);
+                      });
+                    },
+                    style: ButtonStyle(
+                      padding:
+                          WidgetStateProperty.all(const EdgeInsets.all(16)),
+                      shape: WidgetStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0),
+                        ),
+                      ),
+                      backgroundColor: WidgetStateProperty.all(Colors.green),
+                    ),
+                    child: Text(
+                      storyBrain.getCurrentChoice2(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                )
+            ],
+          ),
+        )),
       ),
     );
   }
